@@ -9,8 +9,6 @@ const config = {
     messagingSenderId: "**************************"
 };
 
-console.log("entrou");
-
 export const firebaseImpl = firebase.initializeApp(config);
 export const firebaseDatabase = firebase.database();
 export const firebaseAuth = firebase.auth();
