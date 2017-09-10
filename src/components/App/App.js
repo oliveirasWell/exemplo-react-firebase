@@ -14,11 +14,11 @@ class App extends Component {
 
         let ref = firebaseDatabase.ref(nodes.leituras);
 
-        ref.limitToLast(25).on('value', function(dataSnapshot) {
+        ref.limitToLast(20).on('value', function (dataSnapshot) {
 
             let items = [];
 
-            dataSnapshot.forEach( childSnapshot => {
+            dataSnapshot.forEach(childSnapshot => {
                 let item = childSnapshot.val();
                 item['.key'] = childSnapshot.key;
                 items.push(item);
@@ -32,14 +32,25 @@ class App extends Component {
 
     render() {
         const leituras = this.state.leituras.map((leitura, index) =>
-            <div>
-                <div>{ !leitura.data ? '0' : leitura.data} - {leitura.temperatura} - {leitura.umidade} - {leitura.cliente}</div>
-            </div>
+            <tr>
+                <td>{!leitura.data ? '0' : leitura.data}</td>
+                <td>{leitura.temperatura}</td>
+                <td>{leitura.umidade}</td>
+                <td>{leitura.cliente}</td>
+            </tr>
         );
 
         return (
             <div className="App">
-                {leituras}
+                <table>
+                    <tr>
+                        <th>Data</th>
+                        <th>Temperatura</th>
+                        <th>Umidade</th>
+                        <th>Cliente</th>
+                    </tr>
+                    {leituras}
+                </table>
             </div>
         );
     }
