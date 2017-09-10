@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
 import {firebaseDatabase} from "../../util/firebaseUtils.js";
-import ReactFireMixin from "reactfire";
-import reactMixin from "react-mixin";
 import nodes from "../../util/databaseUtils";
 
 class App extends Component {
@@ -35,7 +33,7 @@ class App extends Component {
     render() {
         const leituras = this.state.leituras.map((leitura, index) =>
             <div>
-                <div>{ !!!leitura.data ? '0' : leitura.data} - {leitura.temperatura} - {leitura.umidade} - {leitura.cliente}</div>
+                <div>{ !leitura.data ? '0' : leitura.data} - {leitura.temperatura} - {leitura.umidade} - {leitura.cliente}</div>
             </div>
         );
 
@@ -46,7 +44,5 @@ class App extends Component {
         );
     }
 }
-
-reactMixin(App.prototype, ReactFireMixin);
 
 export default App;
