@@ -11,23 +11,19 @@ class App extends Component {
     }
 
     componentWillMount() {
-
-        let ref = firebaseDatabase.ref(nodes.leituras);
-
-        ref.limitToLast(20).on('value', function (dataSnapshot) {
-
-            let items = [];
-
-            dataSnapshot.forEach(childSnapshot => {
-                let item = childSnapshot.val();
-                item['.key'] = childSnapshot.key;
-                items.push(item);
-            });
-
-            this.setState({
-                leituras: items
-            });
-        }.bind(this));
+        firebaseDatabase.ref(nodes.leituras)
+            .limitToLast(20)
+            .on('value', function (dataSnapshot) {
+                let items = [];
+                dataSnapshot.forEach(childSnapshot => {
+                    let item = childSnapshot.val();
+                    item['.key'] = childSnapshot.key;
+                    items.push(item);
+                });
+                this.setState({
+                    leituras: items
+                });
+            }.bind(this));
     }
 
     render() {
