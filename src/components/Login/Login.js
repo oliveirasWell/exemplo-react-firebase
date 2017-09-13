@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {firebaseAuth} from "../../util/firebaseUtils.js";
+import {firebaseAuth, firebaseDatabase} from "../../util/firebaseUtils.js";
 import {RaisedButton, TextField} from "material-ui";
 import {Card, CardText} from "material-ui/Card/index";
 import {Redirect, withRouter} from "react-router-dom";
@@ -9,14 +9,17 @@ class Login extends Component {
 
     constructor() {
         super();
-        this.state = {email: '', password: ''};
+        this.state = {email: '', password: '', startedUseCreation: false};
         this.handleInputChange = this.handleInputChange.bind(this);
         this.createUser = this.createUser.bind(this);
+        this.startUseCreation = this.startUseCreation.bind(this);
     }
 
     componentWillMount() {
         this.setState({
-            email: '', password: ''
+            email: '',
+            password: '',
+            startedUseCreation: false
         });
     }
 
@@ -45,13 +48,27 @@ class Login extends Component {
         this.props.history.push(urls.data);
     }
 
+    startUseCreation() {
+        this.setState({
+            startedUseCreation: true
+        });
+    }
+
     createUser() {
         event.preventDefault();
 
+        const username = this.state.username;
         const email = this.state.email;
         const password = this.state.password;
 
         firebaseAuth.createUserWithEmailAndPassword(email, password)
+            .then(function (user) {
+                console.log(user);
+                this.writeUserData(user.uid, username, user.email);
+                this.setState({
+                    startedUseCreation: false
+                });
+            }.bind(this))
             .catch(function (error) {
                 alert(error.message);
             });
@@ -62,50 +79,73 @@ class Login extends Component {
     cleanState() {
         this.setState({
             email: '',
-            password: ''
+            password: '',
+            startedUseCreation: false,
         });
     }
 
+    writeUserData(userId, name, email) {
+        firebaseDatabase.ref('users/' + userId).set({
+            username: name,
+            email: email
+        });
+    }
 
     render() {
-
         if (firebaseAuth.currentUser) {
             return <Redirect to={urls.data}/>
         }
 
-        const form = (
-            <form onSubmit={this.login.bind(this)}>
-                <TextField
-                    hintText="E-mail Field"
-                    floatingLabelText="E-mail"
-                    name="email"
-                    id="email"
-                    fullWidth={true}
-                    value={this.state.email}
-                    type="email"
-                    onChange={this.handleInputChange}
-                />
-                <br/>
-                <TextField
-                    hintText="Password"
-                    floatingLabelText="Password"
-                    name="password"
-                    id="password"
-                    fullWidth={true}
-                    value={this.state.password}
-                    type="password"
-                    onChange={this.handleInputChange}
-                />
-                <br/>
-                <RaisedButton label="sign-in" style={{marginRight: "5px"}} type="submit"/>
-                <RaisedButton label="sign-up" onClick={this.createUser}/>
-            </form>
-        );
+        const inputName =
+            this.state.startedUseCreation
+                ? (
+                    <TextField
+                        hintText="User name"
+                        floatingLabelText="User name"
+                        name="username"
+                        id="username"
+                        fullWidth={true}
+                        value={this.state.username}
+                        type="text"
+                        onChange={this.handleInputChange}
+                    />
+                )
+                : '';
+
+        const createUserButtons = !this.state.startedUseCreation
+            ? <RaisedButton label="sign-up" onClick={this.startUseCreation}/>
+            : <RaisedButton label="create" onClick={this.createUser}/>;
 
         return (
             <Card>
                 <CardText>
-                    {form}
+                    <form onSubmit={this.login.bind(this)}>
+                        {inputName}
+                        <TextField
+                            hintText="E-mail Field"
+                            floatingLabelText="E-mail"
+                            name="email"
+                            id="email"
+                            fullWidth={true}
+                            value={this.state.email}
+                            type="email"
+                            onChange={this.handleInputChange}
+                        />
+                        <br/>
+                        <TextField
+                            hintText="Password"
+                            floatingLabelText="Password"
+                            name="password"
+                            id="password"
+                            fullWidth={true}
+                            value={this.state.password}
+                            type="password"
+                            onChange={this.handleInputChange}
+                        />
+                        <br/>
+                        <RaisedButton label="sign-in" style={{marginRight: "5px"}} type="submit"/>
+                        {createUserButtons}
+                    </form>
                 </CardText>
             </Card>
         );

@@ -29,7 +29,6 @@ class Data extends Component {
     }
 
     render() {
-
         if (!firebaseAuth.currentUser) {
             return <Redirect to={urls.login}/>
         }
