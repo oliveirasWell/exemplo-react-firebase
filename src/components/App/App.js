@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Login from "../Login/Login";
 import {firebaseAuth} from "../../util/firebaseUtils";
 import {MuiThemeProvider} from "material-ui/styles/index";
-import {AppBar, Divider, IconButton} from "material-ui";
+import {AppBar, Divider, Drawer, IconButton} from "material-ui";
 import {IconMenu, MenuItem} from "material-ui/IconMenu/index";
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {NavigationMenu} from "material-ui/svg-icons/index";
@@ -10,12 +10,16 @@ import urls from "../../util/urlUtils";
 import Data from "../Data/Data";
 import {Route} from 'react-router-dom';
 import {withRouter} from "react-router-dom";
+import Users from "../Users/Users";
 
 class App extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {open: false};
         this.logout = this.logout.bind(this);
+        this.handleToggle = this.handleToggle.bind(this);
+        this.handleToggleAndGoToUrl = this.handleToggleAndGoToUrl.bind(this);
     }
 
     logout(event) {
@@ -25,7 +29,17 @@ class App extends Component {
                 this.props.history.push('/')
             }.bind(this), function (error) {
                 console.log(error);
+                alert(error.message);
             });
+    }
+
+    handleToggle() {
+        this.setState({open: !this.state.open});
+    }
+
+    handleToggleAndGoToUrl(url) {
+        this.setState({open: !this.state.open});
+        this.props.history.push(url);
     }
 
     render() {
@@ -33,9 +47,7 @@ class App extends Component {
             firebaseAuth.currentUser
                 ?
                 <IconMenu
-                    iconButtonElement={
-                        <IconButton><MoreVertIcon/></IconButton>
-                    }
+                    iconButtonElement={<IconButton><MoreVertIcon/></IconButton>}
                     targetOrigin={{horizontal: 'right', vertical: 'top'}}
                     anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                 >
@@ -57,11 +69,31 @@ class App extends Component {
                         title={"Data Logger"}
                         iconElementLeft={leftButton}
                         iconElementRight={rightButton}
+                        onLeftIconButtonTouchTap={this.handleToggle}
                     />
+
+                    <Drawer
+                        docked={false}
+                        width={300}
+                        open={this.state.open}
+                        onRequestChange={(open) => this.setState({open})}
+                    >
+                        <MenuItem
+                            onClick={() => this.handleToggleAndGoToUrl(urls.data)}>
+                            Data
+                        </MenuItem>
+
+                        <MenuItem
+                            onClick={() => this.handleToggleAndGoToUrl(urls.users)}>
+                            Users
+                        </MenuItem>
+
+                    </Drawer>
 
                     <Route exact path="/" component={Login}/>
                     <Route path={urls.login} component={Login}/>
                     <Route path={urls.data} component={Data}/>
+                    <Route path={urls.users} component={Users}/>
 
                 </div>
             </MuiThemeProvider>

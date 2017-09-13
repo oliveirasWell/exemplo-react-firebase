@@ -9,11 +9,11 @@ class Data extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {leituras: []};
+        this.state = {data: []};
     }
 
     componentWillMount() {
-        firebaseDatabase.ref(nodes.leituras)
+        firebaseDatabase.ref(nodes.data)
             .limitToLast(20)
             .on('value', function (dataSnapshot) {
                 let items = [];
@@ -23,7 +23,7 @@ class Data extends Component {
                     items.push(item);
                 });
                 this.setState({
-                    leituras: items
+                    data: items
                 });
             }.bind(this));
     }
@@ -34,7 +34,7 @@ class Data extends Component {
             return <Redirect to={urls.login}/>
         }
 
-        const data = this.state.leituras.filter((leitura, index) =>
+        const data = this.state.data.filter((leitura, index) =>
             firebaseAuth.currentUser
                 ? leitura.cliente === firebaseAuth.currentUser.email
                 : true
