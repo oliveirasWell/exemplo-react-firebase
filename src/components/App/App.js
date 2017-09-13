@@ -38,12 +38,10 @@ class App extends Component {
     }
 
     logout(event) {
-
         event.preventDefault();
-
-        firebaseAuth.signOut().then(function() {
+        firebaseAuth.signOut().then(function () {
             console.log("sucess");
-        }, function(error) {
+        }, function (error) {
             console.log(error);
         });
     }
@@ -68,12 +66,11 @@ class App extends Component {
             </div>
             : <div><Login/><UserCreate/></div>;
 
-        return (
-            <div className="App">
 
-                {loginButtons}
-
-                <table>
+        const tabela = (
+            this.state.userLoginEmail === null
+                ? ''
+                : <table>
                     <thead>
                     <tr>
                         <th>Data</th>
@@ -86,6 +83,12 @@ class App extends Component {
                     {leituras}
                     </tbody>
                 </table>
+        );
+
+        return (
+            <div className="App">
+                {loginButtons}
+                {tabela}
             </div>
         );
     }
