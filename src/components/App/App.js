@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import './App.css';
 import {firebaseDatabase} from "../../util/firebaseUtils.js";
 import nodes from "../../util/databaseUtils";
 import Login from "../Login/Login";
@@ -62,7 +61,6 @@ class App extends Component {
                     </CardText>
                 </Card>
         );
-
 
         const data = this.state.leituras.filter((leitura, index) =>
             this.state.userLoginEmail !== null
