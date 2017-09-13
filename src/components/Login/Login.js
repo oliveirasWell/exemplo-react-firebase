@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
 import {firebaseAuth} from "../../util/firebaseUtils.js";
 import {RaisedButton, TextField} from "material-ui";
+import {Card, CardText} from "material-ui/Card/index";
+import {Redirect, withRouter} from "react-router-dom";
+import urls from "../../util/urlUtils";
 
 class Login extends Component {
 
     constructor() {
         super();
-        this.state = {email: '', password: '', userLogin: null};
+        this.state = {email: '', password: ''};
         this.handleInputChange = this.handleInputChange.bind(this);
         this.createUser = this.createUser.bind(this);
     }
@@ -38,6 +41,8 @@ class Login extends Component {
         });
 
         this.cleanState();
+
+        this.props.history.push(urls.data);
     }
 
     createUser() {
@@ -50,6 +55,8 @@ class Login extends Component {
             .catch(function (error) {
                 alert(error.message);
             });
+
+        this.cleanState();
     }
 
     cleanState() {
@@ -59,8 +66,14 @@ class Login extends Component {
         });
     }
 
+
     render() {
-        return (
+
+        if (firebaseAuth.currentUser) {
+            return <Redirect to={urls.data}/>
+        }
+
+        const form = (
             <form onSubmit={this.login.bind(this)}>
                 <TextField
                     hintText="E-mail Field"
@@ -88,7 +101,15 @@ class Login extends Component {
                 <RaisedButton label="sign-up" onClick={this.createUser}/>
             </form>
         );
+
+        return (
+            <Card>
+                <CardText>
+                    {form}
+                </CardText>
+            </Card>
+        );
     }
 }
 
-export default Login;
+export default withRouter(Login);
