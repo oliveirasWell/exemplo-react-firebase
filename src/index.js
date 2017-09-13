@@ -7,9 +7,7 @@ import urls from "./util/urlUtils";
 
 ReactDOM.render(
     <Router>
-        <div>
-            <Route path={urls.home} component={App}/>
-        </div>
+        <Route path={urls.home} component={App}/>
     </Router>,
     document.getElementById('root')
 );

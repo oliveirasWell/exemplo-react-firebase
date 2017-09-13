@@ -57,9 +57,11 @@ class Data extends Component {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {data.length
-                        ? data
-                        : <TableRow><TableRowColumn style={{textAlign: "center"}}>There's no data for you</TableRowColumn></TableRow>}
+                    {
+                        data.length
+                            ? data
+                            : <TableRow><TableRowColumn style={{textAlign: "center"}}>There's no data for you</TableRowColumn></TableRow>
+                    }
                 </TableBody>
             </Table>
         );
