@@ -12,9 +12,11 @@ class Data extends Component {
         this.state = {data: []};
     }
 
-    componentWillMount() {
+    componentDidMount() {
         firebaseDatabase.ref(nodes.data)
-            .limitToLast(20)
+            .limitToLast(10)
+            .orderByChild(nodes.client)
+            .equalTo(firebaseAuth.currentUser.email ? firebaseAuth.currentUser.email : '')
             .on('value', function (dataSnapshot) {
                 let items = [];
                 dataSnapshot.forEach(childSnapshot => {
@@ -33,11 +35,7 @@ class Data extends Component {
             return <Redirect to={urls.login}/>
         }
 
-        const data = this.state.data.filter((leitura, index) =>
-            firebaseAuth.currentUser
-                ? leitura.cliente === firebaseAuth.currentUser.email
-                : true
-        ).map((leitura, index) =>
+        const data = this.state.data.map((leitura, index) =>
             <TableRow>
                 <TableRowColumn>{!leitura.data ? '0' : leitura.data}</TableRowColumn>
                 <TableRowColumn>{leitura.temperatura}</TableRowColumn>
@@ -60,7 +58,8 @@ class Data extends Component {
                     {
                         data.length
                             ? data
-                            : <TableRow><TableRowColumn style={{textAlign: "center"}}>There's no data for you</TableRowColumn></TableRow>
+                            : <TableRow><TableRowColumn style={{textAlign: "center"}}>There's no data
+                                foryou</TableRowColumn></TableRow>
                     }
                 </TableBody>
             </Table>

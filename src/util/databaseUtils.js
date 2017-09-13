@@ -1,6 +1,8 @@
 const nodes = {
     data: 'leitura',
-    users: 'users'
+    users: 'users',
+    client: 'cliente',
+    clients: 'clientes',
 };
 
 export default nodes;
