@@ -6,10 +6,11 @@ import Login from "../Login/Login";
 import {firebaseAuth} from "../../util/firebaseUtils";
 import {MuiThemeProvider} from "material-ui/styles/index";
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table/index";
-import {Card, CardActions, CardHeader, CardText} from "material-ui/Card/index";
-import {AppBar, Divider, FlatButton, IconButton, RaisedButton} from "material-ui";
+import {Card, CardText} from "material-ui/Card/index";
+import {AppBar, Divider, IconButton} from "material-ui";
 import {IconMenu, MenuItem} from "material-ui/IconMenu/index";
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import {NavigationMenu} from "material-ui/svg-icons/index";
 
 class App extends Component {
 
@@ -63,7 +64,7 @@ class App extends Component {
         );
 
 
-        const leituras = this.state.leituras.filter((leitura, index) =>
+        const data = this.state.leituras.filter((leitura, index) =>
             this.state.userLoginEmail !== null
                 ? leitura.cliente === this.state.userLoginEmail
                 : true
@@ -89,33 +90,41 @@ class App extends Component {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {leituras}
+                        {data}
                     </TableBody>
                 </Table>
         );
 
 
-        const xml = (
-            <IconMenu
-                iconButtonElement={
-                    <IconButton><MoreVertIcon/></IconButton>
-                }
-                targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-            >
-                <MenuItem primaryText={this.state.userLoginEmail} style={{text: "5px"}}/>
-                <Divider />
-                <MenuItem primaryText="Sign out" onClick={this.logout}/>
-            </IconMenu>);
+        const rightButton = (
+            this.state.userLoginEmail
+                ? (
+                    <IconMenu
+                        iconButtonElement={
+                            <IconButton><MoreVertIcon/></IconButton>
+                        }
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                    >
+                        <MenuItem primaryText={this.state.userLoginEmail} style={{text: "5px"}}/>
+                        <Divider/>
+                        <MenuItem primaryText="Sign out" onClick={this.logout}/>
+                    </IconMenu>
+                )
+                : ('')
+        );
 
+        const leftButton = (
+            this.state.userLoginEmail ? <IconButton><NavigationMenu/></IconButton> : <IconButton/>
+        );
 
         return (
             <MuiThemeProvider>
                 <div>
                     <AppBar
                         title={"Data Logger"}
-                        iconClassNameRight="muidocs-icon-navigation-expand-more"
-                        iconElementRight={this.state.userLoginEmail ? xml : ''}
+                        iconElementLeft={leftButton}
+                        iconElementRight={rightButton}
                     />
                     {cardButtonsLogin}
                     {table}
