@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table/index";
 import {firebaseDatabase, firebaseAuth} from "../../util/firebaseUtils.js";
 import nodes from "../../util/databaseUtils";
+import {Redirect} from "react-router-dom";
+import urls from "../../util/urlUtils";
 
 class Data extends Component {
 
@@ -11,15 +13,10 @@ class Data extends Component {
     }
 
     componentDidMount() {
-        const query = firebaseDatabase.ref(nodes.data)
-            .limitToLast(10);
-
-        if (firebaseAuth.currentUser) {
-            query.orderByChild(nodes.client).equalTo(firebaseAuth.currentUser.email)
-        }
-
-        query
+        firebaseDatabase.ref(nodes.data)
+            .limitToLast(10)
             .orderByChild(nodes.client)
+            .equalTo(firebaseAuth.currentUser.email)
             .on('value', function (dataSnapshot) {
                 let items = [];
                 dataSnapshot.forEach(childSnapshot => {
@@ -34,6 +31,11 @@ class Data extends Component {
     }
 
     render() {
+
+        if (!firebaseAuth.currentUser) {
+            return <Redirect to={urls.login}/>
+        }
+
         const data = this.state.data.reverse().map((leitura, index) =>
             <TableRow>
                 <TableRowColumn>{!leitura.data ? '0' : leitura.data}</TableRowColumn>

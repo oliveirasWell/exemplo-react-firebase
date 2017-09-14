@@ -4,6 +4,8 @@ import {RaisedButton, TextField} from "material-ui";
 import {Card, CardText} from "material-ui/Card/index";
 import {Redirect, withRouter} from "react-router-dom";
 import urls from "../../util/urlUtils";
+import nodes from "../../util/databaseUtils";
+
 
 class Login extends Component {
 
@@ -85,7 +87,7 @@ class Login extends Component {
     }
 
     writeUserData(userId, name, email) {
-        firebaseDatabase.ref('users/' + userId).set({
+        firebaseDatabase.ref(nodes.users + '/' + userId).set({
             username: name,
             email: email
         });
