@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-import urls from "../../util/urlUtils";
-import {Redirect} from "react-router-dom";
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table/index";
 import {firebaseDatabase, firebaseAuth} from "../../util/firebaseUtils.js";
 import nodes from "../../util/databaseUtils";
@@ -13,10 +11,15 @@ class Data extends Component {
     }
 
     componentDidMount() {
-        firebaseDatabase.ref(nodes.data)
-            .limitToLast(10)
+        const query = firebaseDatabase.ref(nodes.data)
+            .limitToLast(10);
+
+        if (firebaseAuth.currentUser) {
+            query.orderByChild(nodes.client).equalTo(firebaseAuth.currentUser.email)
+        }
+
+        query
             .orderByChild(nodes.client)
-            .equalTo(firebaseAuth.currentUser.email ? firebaseAuth.currentUser.email : '')
             .on('value', function (dataSnapshot) {
                 let items = [];
                 dataSnapshot.forEach(childSnapshot => {
@@ -31,16 +34,14 @@ class Data extends Component {
     }
 
     render() {
-        if (!firebaseAuth.currentUser) {
-            return <Redirect to={urls.login}/>
-        }
-
-        const data = this.state.data.map((leitura, index) =>
+        const data = this.state.data.reverse().map((leitura, index) =>
             <TableRow>
                 <TableRowColumn>{!leitura.data ? '0' : leitura.data}</TableRowColumn>
                 <TableRowColumn>{leitura.temperatura}</TableRowColumn>
                 <TableRowColumn>{leitura.umidade}</TableRowColumn>
-                <TableRowColumn>{leitura.cliente}</TableRowColumn>
+
+                {firebaseAuth.currentUser ? (<TableRowColumn>{leitura.cliente}</TableRowColumn>) : ('')}
+
             </TableRow>
         );
 
@@ -51,7 +52,7 @@ class Data extends Component {
                         <TableHeaderColumn>Data</TableHeaderColumn>
                         <TableHeaderColumn>Temperature</TableHeaderColumn>
                         <TableHeaderColumn>Humidity</TableHeaderColumn>
-                        <TableHeaderColumn>Client</TableHeaderColumn>
+                        {firebaseAuth.currentUser ? (<TableHeaderColumn>Client</TableHeaderColumn>) : ('')}
                     </TableRow>
                 </TableHeader>
                 <TableBody>
