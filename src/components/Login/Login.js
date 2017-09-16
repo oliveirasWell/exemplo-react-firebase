@@ -12,9 +12,6 @@ class Login extends Component {
     constructor() {
         super();
         this.state = {email: '', password: '', startedUseCreation: false};
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.createUser = this.createUser.bind(this);
-        this.startUseCreation = this.startUseCreation.bind(this);
     }
 
     componentWillMount() {
@@ -25,7 +22,7 @@ class Login extends Component {
         });
     }
 
-    handleInputChange(event) {
+    handleInputChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
@@ -33,9 +30,9 @@ class Login extends Component {
         this.setState({
             [name]: value
         });
-    }
+    };
 
-    login(event) {
+    login = event =>  {
         event.preventDefault();
 
         const email = this.state.email;
@@ -48,15 +45,15 @@ class Login extends Component {
         this.cleanState();
 
         this.props.history.push(urls.data);
-    }
+    };
 
-    startUseCreation() {
+    startUseCreation = () =>  {
         this.setState({
             startedUseCreation: true
         });
-    }
+    };
 
-    createUser() {
+    createUser = () => {
         event.preventDefault();
 
         const username = this.state.username;
@@ -76,22 +73,22 @@ class Login extends Component {
             });
 
         this.cleanState();
-    }
+    };
 
-    cleanState() {
+    cleanState = () => {
         this.setState({
             email: '',
             password: '',
             startedUseCreation: false,
         });
-    }
+    };
 
-    writeUserData(userId, name, email) {
+    writeUserData = (userId, name, email) => {
         firebaseDatabase.ref(nodes.users + '/' + userId).set({
             username: name,
             email: email
         });
-    }
+    };
 
     render() {
         if (firebaseAuth.currentUser) {

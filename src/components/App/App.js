@@ -17,12 +17,9 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {open: false};
-        this.logout = this.logout.bind(this);
-        this.handleToggle = this.handleToggle.bind(this);
-        this.handleToggleAndGoToUrl = this.handleToggleAndGoToUrl.bind(this);
     }
 
-    logout(event) {
+    logout = event => {
         event.preventDefault();
         firebaseAuth.signOut()
             .then(function () {
@@ -31,16 +28,16 @@ class App extends Component {
                 console.log(error);
                 alert(error.message);
             });
-    }
+    };
 
-    handleToggle() {
+    handleToggle = () => {
         this.setState({open: !this.state.open});
-    }
+    };
 
-    handleToggleAndGoToUrl(url) {
+    handleToggleAndGoToUrl = url => {
         this.setState({open: !this.state.open});
         this.props.history.push(url);
-    }
+    };
 
     render() {
         const rightButton = (

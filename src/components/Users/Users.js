@@ -12,10 +12,10 @@ class Users extends Component {
         this.state = {users: []};
     }
 
-    componentWillMount() {
+    componentDidMount = () => {
         firebaseDatabase.ref(nodes.users)
             .limitToLast(20)
-            .on('value', function (dataSnapshot) {
+            .on('value', (dataSnapshot) => {
                 let items = [];
                 dataSnapshot.forEach(childSnapshot => {
                     let item = childSnapshot.val();
@@ -25,7 +25,7 @@ class Users extends Component {
                 this.setState({
                     users: items
                 });
-            }.bind(this));
+            });
     }
 
     render() {

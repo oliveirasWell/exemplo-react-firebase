@@ -12,12 +12,12 @@ class Data extends Component {
         this.state = {data: []};
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         firebaseDatabase.ref(nodes.data)
             .limitToLast(10)
             .orderByChild(nodes.client)
             .equalTo(firebaseAuth.currentUser.email)
-            .on('value', function (dataSnapshot) {
+            .on('value', (dataSnapshot) => {
                 let items = [];
                 dataSnapshot.forEach(childSnapshot => {
                     let item = childSnapshot.val();
@@ -27,14 +27,11 @@ class Data extends Component {
                 this.setState({
                     data: items
                 });
-            }.bind(this));
-    }
+            });
+    };
 
     render() {
 
-        if (!firebaseAuth.currentUser) {
-            return <Redirect to={urls.login}/>
-        }
 
         const data = this.state.data.reverse().map((leitura, index) =>
             <TableRow>
@@ -60,9 +57,12 @@ class Data extends Component {
                 <TableBody>
                     {
                         data.length
-                            ? data
-                            : <TableRow><TableRowColumn style={{textAlign: "center"}}>There's no data
-                                foryou</TableRowColumn></TableRow>
+                            ? (data)
+                            : (<TableRow>
+                                <TableRowColumn style={{textAlign: "center"}}>
+                                    There's no data for you
+                                </TableRowColumn>
+                            </TableRow>)
                     }
                 </TableBody>
             </Table>
