@@ -22,9 +22,9 @@ class App extends Component {
     logout = event => {
         event.preventDefault();
         firebaseAuth.signOut()
-            .then(function () {
+            .then(() => {
                 this.props.history.push('/')
-            }.bind(this), function (error) {
+            }, function (error) {
                 console.log(error);
                 alert(error.message);
             });
