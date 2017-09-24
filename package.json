@@ -12,7 +12,9 @@
     "react-scripts": "0.9.x",
     "react-test-renderer": "^15.6.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "firebase-tools": "^3.12.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
