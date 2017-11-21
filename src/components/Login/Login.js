@@ -5,6 +5,7 @@ import {Card, CardText} from "material-ui/Card/index";
 import {Redirect, withRouter} from "react-router-dom";
 import urls from "../../util/urlUtils";
 import nodes from "../../util/databaseUtils";
+import {googleProvider} from "../../util/firebaseUtils";
 
 
 class Login extends Component {
@@ -12,15 +13,15 @@ class Login extends Component {
     constructor() {
         super();
         this.state = {email: '', password: '', startedUseCreation: false};
-    }
+    };
 
-    componentWillMount() {
+    componentWillMount = () => {
         this.setState({
             email: '',
             password: '',
             startedUseCreation: false
         });
-    }
+    };
 
     handleInputChange = event => {
         const target = event.target;
@@ -45,6 +46,14 @@ class Login extends Component {
         this.cleanState();
 
         this.props.history.push(urls.data);
+    };
+
+    googleLogin = event => {
+        firebaseAuth.signInWithRedirect(googleProvider).catch(function (error) {
+            alert(error.message);
+        });
+
+        this.cleanState();
     };
 
     startUseCreation = () =>  {
@@ -118,7 +127,7 @@ class Login extends Component {
         return (
             <Card>
                 <CardText>
-                    <form onSubmit={this.login.bind(this)}>
+                    <form onSubmit={this.login}>
                         {inputName}
                         <TextField
                             hintText="E-mail Field"
@@ -143,6 +152,7 @@ class Login extends Component {
                         />
                         <br/>
                         <RaisedButton label="sign-in" style={{marginRight: "5px"}} type="submit"/>
+                        <RaisedButton label="Google sign-in" style={{marginRight: "5px"}} onClick={this.googleLogin}/>
                         {createUserButtons}
                     </form>
                 </CardText>

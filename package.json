@@ -1,7 +1,7 @@
 {
   "name": "react-firebase-example",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "dependencies": {
     "enzyme": "^2.9.1",
     "firebase": "^4.3.1",
